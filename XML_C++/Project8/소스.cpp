@@ -1,5 +1,6 @@
 #include "tinyxml.h"
 #include <iostream>
+using namespace std;
 
 int main()
 {
@@ -42,7 +43,7 @@ int main()
 	pElem = new TiXmlElement("class2");
 	pRoot->LinkEndChild(pElem);
 	pElem0 = new TiXmlElement("Teacher");
-	pElem0->LinkEndChild(new TiXmlElement("SSS"));
+	pElem0->LinkEndChild(new TiXmlElement("SSS1"));
 	pElem->LinkEndChild(pElem0);
 
 	pSubElem = new TiXmlElement("English");
@@ -60,5 +61,53 @@ int main()
 	pSubElem->SetAttribute("ds", 25);
 	pSubElem->SetAttribute("dsz", 25);
 
+	pElem = new TiXmlElement("class3");
+	pRoot->LinkEndChild(pElem);
+	pElem0 = new TiXmlElement("Teacher");
+	pElem0->LinkEndChild(new TiXmlElement("SSS2"));
+	pElem->LinkEndChild(pElem0);
+
+	pSubElem = new TiXmlElement("English");
+	pElem->LinkEndChild(pSubElem);
+	pSubElem->SetAttribute("name", "score");
+	pSubElem->SetAttribute("ab", 70);
+	pSubElem->SetAttribute("vc", 90);
+	pSubElem->SetAttribute("ds", 30);
+
+	pSubElem = new TiXmlElement("Math");
+	pElem->LinkEndChild(pSubElem);
+	pSubElem->SetAttribute("name", "score");
+	pSubElem->SetAttribute("ab", 60);
+	pSubElem->SetAttribute("vc", 70);
+	pSubElem->SetAttribute("ds", 25);
+	pSubElem->SetAttribute("dsz", 25);
+
+	pElem = new TiXmlElement("class4");
+	pRoot->LinkEndChild(pElem);
+	pElem0 = new TiXmlElement("Teacher");
+	pElem0->LinkEndChild(new TiXmlElement("SSS3"));
+	pElem->LinkEndChild(pElem0);
+
+	pSubElem = new TiXmlElement("English");
+	pElem->LinkEndChild(pSubElem);
+	pSubElem->SetAttribute("name", "score");
+	pSubElem->SetAttribute("ab", 70);
+	pSubElem->SetAttribute("vc", 90);
+	pSubElem->SetAttribute("ds", 30);
+
+	pSubElem = new TiXmlElement("Math");
+	pElem->LinkEndChild(pSubElem);
+	pSubElem->SetAttribute("name", "score");
+	pSubElem->SetAttribute("ab", 60);
+	pSubElem->SetAttribute("vc", 70);
+	pSubElem->SetAttribute("ds", 25);
+	pSubElem->SetAttribute("dsz", 25);
+
+	for (int i = 0; i < 4; i++) {
+		TiXmlNode* tmp = pRoot->Parent();
+		pElem->RemoveChild(pElem->FirstChild());
+		pElem = tmp->FirstChildElement();
+	}
+	
 	doc.SaveFile("Test.xml");
 }
