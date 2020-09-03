@@ -1352,7 +1352,7 @@ ul.social-icons li {
 
 
 #site-header {
-	background: #000;
+	background: #cd2653;
 	position: relative;
 }
 
@@ -4368,8 +4368,8 @@ div.comment:first-of-type {
 
 .footer-nav-widgets-wrapper,
 #site-footer {
-	background-color: #fff;
-	border-color: #dedfdf;
+	background-color: #cd2653;
+	border-color: #cd2653;
 	border-style: solid;
 	border-width: 0;
 }
