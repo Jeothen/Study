@@ -1,5 +1,6 @@
 # json과 비슷하지만, kubernetes같은 자동화 및 배포에 많이 사용됨
 
+# docker compose version
 version: '3.3'
 
 services:
