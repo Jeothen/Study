@@ -1,0 +1,61 @@
+[{
+  "_id": {
+    "$oid": "5f6e9ab35ecb3a5d78d48123"
+  },
+  "title": "Post One",
+  "body": "Body of post 1",
+  "category": "News",
+  "tags": [
+    "news",
+    "events"
+  ],
+  "user": {
+    "name": "Jong Doe",
+    "status": "author"
+  },
+  "date": "Sat Sep 26 2020 10:34:43 GMT+0900 (KST)",
+  "views": 10
+},{
+  "_id": {
+    "$oid": "5f6e9c085ecb3a5d78d48124"
+  },
+  "title": "Post Two",
+  "body": "Body of post 2",
+  "date": "Sat Sep 26 2020 11:05:27 GMT+0900 (KST)",
+  "category": "Technology"
+},{
+  "_id": {
+    "$oid": "5f6e9c0b5ecb3a5d78d48127"
+  },
+  "title": "Post Two",
+  "body": "Body of post two",
+  "category": "Technology"
+},{
+  "_id": {
+    "$oid": "5f6ea0ac5ecb3a5d78d4812a"
+  },
+  "title": "Post Two",
+  "body": "Body of post two",
+  "category": "Technology"
+},{
+  "_id": {
+    "$oid": "5f6ea0ac5ecb3a5d78d4812b"
+  },
+  "title": "Post Three",
+  "body": "Body of post three",
+  "category": "News"
+},{
+  "_id": {
+    "$oid": "5f6ea0ad5ecb3a5d78d4812d"
+  },
+  "title": "Post Two",
+  "body": "Body of post two",
+  "category": "Technology"
+},{
+  "_id": {
+    "$oid": "5f6ea0ad5ecb3a5d78d4812e"
+  },
+  "title": "Post Three",
+  "body": "Body of post three",
+  "category": "News"
+}]
