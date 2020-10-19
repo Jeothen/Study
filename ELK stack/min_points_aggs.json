@@ -1,0 +1,11 @@
+{
+	"size" : 0,
+	"aggs" : {
+		"min_score" : {
+			"min" : {
+				"field" : "points"
+			}
+		}
+	}
+}
+
