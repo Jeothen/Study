@@ -1140,5 +1140,270 @@ Hello world
 
 ---
 
-#### 가동 컨테이너의 프로세스 확인
+#### 가동 컨테이너의 프로세스 확인 (docker container top)
+
+* 가동중인 컨테이너에서 실행되고 있는 프로세스를 확인할 때는 ``docker container top`` 명령
+* 프로세스 확인
+
+```shell
+$ docker container top elastic_hugle
+PID                 USER                TIME                COMMAND
+2549                root                0:00                /bin/bash
+```
+
+#### 가동 컨테이너의 포트 전송 확인 (docker container port)
+
+* 가동중인 컨테이너에서 실행되고 있는 프로세스가 전송되고 있는 포트를 확인할 때 사용
+
+```shell
+$ docker container port workpress-docker_wordpress_1
+80/tcp -> 0.0.0.0:8000
+```
+
+* 컨테이너의 80번 포트가 호스트의 8000번 포트로 전송
+
+```shell
+# 포트를 추가해서 image 실행
+$ docker run -p 5000:3400 -d arisu1000/simple-container-app
+ec4237a2b2ed4d89e67cbf6d54c1db6938f804a3682092648f81c4ba68f0e19f
+$ docker container ls
+CONTAINER ID        IMAGE                            COMMAND                  CREATED             STATUS              PORTS                    NAMES
+ec4237a2b2ed        arisu1000/simple-container-app   "./simple-container-…"   3 seconds ago       Up 3 seconds        0.0.0.0:5000->3400/tcp   relaxed_robinson
+```
+
+
+
+#### 잘 알려진 포트
+
+| 번호 | TCP/IP  | 서비스/프로토콜 | 설명                      |
+| ---- | ------- | --------------- | ------------------------- |
+| 20   | TCP     | FTP(데이터)     | 파일 전송 (데이터)        |
+| 21   | TCP     | FTP(제어)       | 파일 전송 (제어)          |
+| 22   | TCP/UDP | ssh             | secure shell              |
+| 23   | TCP     | Telnet          | 원격 엑세스               |
+| 25   | TCP/UDP | SMTP            | 메일 전송                 |
+| 43   | TCP     | WHOIS           | 도메인 정보 검색          |
+| 53   | TCP/UDP | DNS             | 도메인 네임 시스템        |
+| 80   | TCP/UDP | HTTP            | 웹 엑세스                 |
+| 88   | TCP/UDP | Kerberos        | Kerberos 인증             |
+| 110  | TCP     | POP3            | 메일 수신                 |
+| 123  | UDP     | NTP             | 시간 조정                 |
+| 135  | TCP     | Microsoft RPC   | Microsoft의 원격 엑세스   |
+| 143  | TCP/UDP | IMAP2/4         | 인터넷 메일 엑세스        |
+| 161  | TCP/UDP | SNMP            | 네트워크 감시             |
+| 162  | TCP/UDP | SNMP 트랩       | 네트워크 감시(트랩)       |
+| 389  | TCP/UDP | LDAP            | 디렉토리 서비스           |
+| 443  | TCP/UDP | HTTPS           | HTTP의 암호화 통신        |
+| 465  | TCP     | SMTPS           | SMTP의 암호화 통신        |
+| 514  | UDP     | Syslog          | 로그 수집                 |
+| 989  | TCP/UDP | FTPS(데이터)    | FTP(데이터)의 암호화 통신 |
+| 990  | TCP/UDP | FTPS(제어)      | FTP(제어)의 암호화 통신   |
+| 992  | TCP/UDP | Telnets         | Telnet의 암호화 통신      |
+| 993  | TCP     | IMAPS           | IMAP의 암호화 통신        |
+| 995  | TCP     | POP3S           | POP3의 암호화 통신        |
+
+---
+
+#### 컨테이너 이름 변경 (docker container rename)
+
+* 컨테이너의 이름을 변경할 때 `` docker container rename` 명령을 사용
+
+```shell
+$ docker container ls
+CONTAINER ID        IMAGE                            COMMAND                  CREATED             STATUS              PORTS                  NAMES
+80c2ca2c4589        arisu1000/simple-container-app   "sh -c 'echo The app…"   21 minutes ago      Up 21 minutes                              k8s_kubernetes-simple-pod_kubernetes-simple-pod2_default_5ab1ea09-b37c-49ac-ae48-f99c65293ba1_44
+$ docker container rename k8s_kubernetes-simple-pod_kubernetes-simple-pod2_default_5ab1ea09-b37c-49ac-ae48-f99c65293ba1_44 test_rename
+$ docker container ls
+80c2ca2c4589        arisu1000/simple-container-app   "sh -c 'echo The app…"   22 minutes ago           Up 22 minutes                                  test_rename
+```
+
+---
+
+#### 컨테이너 안의 파일 복사 (docker container cp)
+
+* docker container cp 명령
+
+```shell
+$ docker container cp <컨테이너 식별자>:<컨테이너 안의 파일 경로> <호스트의 디렉토리 경로>
+
+$ docker container cp <호스트 파일> <컨테이너 식별자>:<컨테이너 안의 파일 경로>
+```
+
+* 파일 복사
+
+```shell
+$ docker container cp webap3:/etc/nginx/nginx.conf /tmp/nginx.conf  # container to host
+$ ls -la /tmp/nginx.conf
+-rw-r--r--  1 thjeong  wheel  643  9 29 23:12 /tmp/nginx.conf
+
+$ docker container cp ./basic.md webap3:/etc/nginx/basic.md   # host to container
+```
+
+#### 컨테이너 조작의 차분 확인 (docker container diff)
+
+* 컨테이너 안에서 어떤 조작을 하여 컨테이너 이미지가 생성되었을 때와 다른 경우 변경점을 확인하려면 `` docker container diff`` 명령 사용
+
+```shell
+$ docker container diff <컨테이너 식별자>
+```
+
+* 변경의 구분
+
+| 구분 | 설명      |
+| ---- | --------- |
+| A    | 파일 추가 |
+| D    | 파일 삭제 |
+| C    | 파일 수정 |
+
+* 신규 작성자 등록 및 변경사항 확인
+
+````shell
+$ docker container run -it --name "test_diff" nginx /bin/bash
+root@580b2fce32eb:/# useradd newuser
+root@580b2fce32eb:/# exit
+exit
+$docker container diff test_diff 
+C /root
+A /root/.bash_history
+C /var
+C /var/log
+C /var/log/faillog
+C /var/log/lastlog
+C /etc
+C /etc/shadow
+C /etc/subuid
+C /etc/subgid
+C /etc/group-
+C /etc/gshadow-
+C /etc/passwd-
+C /etc/group
+A /etc/subuid-
+C /etc/gshadow
+A /etc/subgid-
+C /etc/passwd
+````
+
+---
+
+### Docker 이미지 생성
+
+* 컨테이너를 바탕으로 Docker 이미지 생성
+* 이미지 -> 컨테이너 (환경에 맞추어 변경) -> 이미지 생성으로 환경에 맞는 이미지를 만들 수 있음
+
+
+
+#### 컨테이로부터 이미지 작성 (docker container commit)
+
+* docker container commit 명령
+
+```shell
+$ docker container commit [옵션] <컨테이너 식별자> [이미지명[:태그명]]
+```
+
+* 지정할 수 있는 옵션
+
+| 옵션          | 설명                                            |
+| ------------- | ----------------------------------------------- |
+| --author, -a  | 작성자를 지정한다[ ex) test<<test@google.com>>] |
+| --message, -m | 메시지를 지정                                   |
+| --change, -c  | commit 시 Dockerfile 명령을 지정한다            |
+| --pause, -p   | 컨테이너를 일시정지하고 commit                  |
+
+* 컨테이너로부터 이미지 작성
+
+```shell
+$ docker container commit -a "jeothen" webap3 jeothen/webap3:1.0
+sha256:d6bf85c8801e28d9fed8e03d4b0e05f604c5fe865737c6a27d2b0383093a4fe2
+
+$ docker image ls
+REPOSITORY           TAG        IMAGE ID            CREATED             SIZE
+jeothen/webap3       1.0       d6bf85c8801e        6 seconds ago       133MB
+```
+
+* 이미지 상세 정보 확인
+
+```shell
+$ docker image inspect jeothen/webap3:1.0
+[
+    {
+        "Id": "sha256:d6bf85c8801e28d9fed8e03d4b0e05f604c5fe865737c6a27d2b0383093a4fe2",
+        "RepoTags": [
+            "jeothen/webap3:1.0"
+        ],
+        ...
+        "Author": "jeothen",
+  ...
+]
+```
+
+---
+
+#### 컨테이너를 tar 파일로 출력 (docker container export)
+
+* docker에서 가동중인 컨테이의 디렉토리 / 파일을 모아 tar파일 생성
+* tar 파일을 바탕으로 다른 서버에서 컨테이너를 가동시킬 수 있음
+
+* docker container export 명령
+
+```shell
+$ docker container export <컨테이너 식별자>
+```
+
+* 파일 출력
+
+```powershell
+$ docker container export webap3 > webap3.tar
+$ ls -la
+-rw-r--r--   1 thjeong  staff  135349248 10 28 00:01 webap3.tar
+# tar 파일 상세 정보 출력
+$ tar -tf webap3.tar
+tar -tf webap3.tar
+.dockerenv
+bin/
+bin/bash
+bin/cat
+bin/chgrp
+bin/chmod
+bin/chown
+bin/cp
+bin/dash
+bin/date
+bin/dd
+bin/df
+bin/dir
+bin/dmesg
+bin/dnsdomainname
+bin/domainname
+....
+```
+
+---
+
+#### tar 파일로부터 이미지 작성 (docker image import)
+
+* Linux OS 이미지의 디렉토리 / 파일로부터 Docker Image를 만들 수 있음
+* docker image import 명령
+
+```shell
+$ docker image import <파일 또는 URL> | - [이미지명[:태그명]]
+```
+
+* 압축된 디렉토리나 파일도 취급할 수 있음
+* root 권한으로 실행 - 엑세스 권한이 없는 파일은 생략되기 때문
+* docker image import 명령으로 지정할 수 있는 archive(압축) 파일 
+  * tar  / tar.gz / tgz / bzip / tar.xz / txz 
+
+* 이미지 작성 (webap3.tar 를 바탕으로 jeothen/webap3라는 태그명이 1.1인 이미지 작성)
+
+```shell
+$ cat webap3.tar | docker image import - jeothen/webap3:1.1
+sha256:c99712e80befcf4ab8c45e0c97c4a1fdc182fac2c81dd75894a7bf838c010062
+$ docker image ls
+REPOSITORY        TAG       IMAGE ID            CREATED             SIZE
+jeothen/webap3    1.1       c99712e80bef        17 seconds ago      131MB
+```
+
+---
+
+#### 이미지 저장 (docker image save)
 
