@@ -774,6 +774,7 @@ $ curl -XGET localhost:9200/_search?pretty --data-binary @terms_aggs.json
   }
 }
 
+# bucket aggretation은 sub aggregation을 넣을 수 있음
 // terms -> aggs
 $ curl -XGET localhost:9200/_search?pretty --data-binary @stats_by_team.json 
 {
@@ -820,5 +821,47 @@ $ curl -XGET localhost:9200/_search?pretty --data-binary @stats_by_team.json
     }
   }
 }
+```
+
+
+
+
+
+
+
+// STOP
+
+* KIBANA Setup
+
+```shell
+$ wget https://artifacts.elastic.co/downloads/kibana/kibana-5.4.0-amd64.deb
+$ sha1sum kibana-5.4.0-amd64.deb 
+$ sudo dpkg -i kibana-5.4.0-amd64.deb
+```
+
+* Kibana 실행
+
+```shell
+$ sudo /usr/share/kibana/bin/kibana
+```
+
+* 가상os에 웹 서버 설치
+
+```shell
+# Apache2 (http://localhost)
+$ sudo apt install apache2
+
+# 서버 start
+$ sudo /etc/init.d/apache2 start
+
+# restart
+$ sudo /etc/init.d/apache2 restart
+
+# stop
+$ sudo /etc/init.d/apache2 stop
+
+# Tomcat9  - running jsp (http://localhost:8080) 
+$ sudo apt install tomcat9
+
 ```
 
