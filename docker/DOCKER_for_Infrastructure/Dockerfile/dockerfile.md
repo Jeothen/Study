@@ -302,3 +302,287 @@ $ docker container run -it --rm greet --lang=es asa
 Hola asa
 ```
 
+---
+
+### 명령 및 데몬 실행
+
+* Docker Image를 만들려면 필요한 미들웨어를 설치하고, 사용자 계정이나 디렉토리를 작성하는 등의 명령을 실행
+
+#### 명령 실행 (RUN 명령)
+
+* 컨테이너에는 FROM 명령에서 지정한 베이스 이미지에 대해 '애플리케이션/미들웨어를 설치 및 설정'
+
+* Run 명령 ``Run [실행하고 싶은 명령]``
+
+
+
+* Shell 형식으로 기술
+
+  * Shell 형식의 RUN 명령 실행
+
+  ```shell
+  # Nginx의 설치
+  RUN apt-get install -y nginx
+  ```
+
+  * Docker 컨테이너 안에서 ``/bin/sh -c`` 를 사용하여 명령을 실행했을 때와 같이 동작
+  * Docker Container에서 실행할 기본 쉘을 변경하고 싶을 땐 SHELL 명령을 사용
+
+* Exec 형식으로 기술
+
+  * Shell 형식으로 명령을 기술하면, ``/bin/sh` 에서 실행되지만, Exec 형식으로 기술하면 쉘을 경유하지 않고 직접 실행
+    * 명령 인수에 따라 $HOME과 같은 환경변수를 저장할 수 없음
+    * Exec 형식에서 실행하고 싶은 명령을 JSON 배열로 지정
+
+  * Shell 경로를 지정한 후 명령 (-c : cpu shares)
+
+    ```shell
+    # Nginx의 설치
+    RUN ["/bin/bash", "-c", "apt-get install -y nginx"]
+    ```
+
+  * RUN 명령의 예시
+
+  ```shell
+  # 베이스 이미지 설정
+  FROM ubuntu:latest
+  
+  # RUN 명령의 실행
+  RUN echo Hello Shell type
+  RUN ["echo", " Hello Exec type"]
+  RUN ["/bin/bash", "-c", "echo ' Hello Using bash on Exec type']
+  ```
+
+  * RUN 명령은 순서대로 실행됨.
+
+  * RUN 명령의 실행 로그
+
+  ```shell
+  docker build -t run-sample .
+  Sending build context to Docker daemon  2.562MB
+  Step 1/4 : FROM ubuntu:latest
+   ---> d70eaf7277ea
+  Step 2/4 : RUN echo Hello Shell type
+   ---> Running in d70d073fbee7
+  Hello Shell type
+  Removing intermediate container d70d073fbee7
+   ---> 7144de2e6467
+  Step 3/4 : RUN ["echo", " Hello Exec type "]
+   ---> Running in ad16b1e14db2
+   Hello Exec type 
+  Removing intermediate container ad16b1e14db2
+   ---> 3dc0bb47ecdd
+  Step 4/4 : RUN ["/bin/bash", "-c", "echo ' Hello Using bash on Exec type ' "]
+   ---> Running in 4559d21a7b48
+   Hello Using bash on Exec type 
+  Removing intermediate container 4559d21a7b48
+   ---> d8bc9b71ab28
+  Successfully built d8bc9b71ab28
+  Successfully tagged run-sample:latest
+  
+  $ docker image ls      
+  REPOSITORY       TAG           IMAGE ID            CREATED              SIZE
+  run-sample      latest         d8bc9b71ab28        About a minute ago   72.9MB
+  ```
+
+  * 이미지 구성 History
+
+  ```shell
+  $ docker history run-sample
+  IMAGE           CREATED              CREATED BY                                      SIZE        COMMENT
+  d8bc9b71ab28    About a minute ago   /bin/bash -c echo ' Hello Using bash on Exec…   0B                  
+  3dc0bb47ecdd    About a minute ago   echo  Hello Exec type                           0B                  
+  7144de2e6467    About a minute ago   /bin/sh -c echo Hello Shell type                0B                  
+  ```
+
+  * 실행 결과가 쉘을 통하지 않고 실행됨
+  * layer가 아래부터 쌓이는 것을 확인할 수 있음
+
+  ---
+
+  #### 이미지 레이어
+
+  * Dockerfile을 빌드하면 명령마다 내부 이미지가 하나씩 작성
+
+  ```shell
+  RUN yum -y install httpd
+  RUN yum -y install php
+  RUN yum -y install php-mbstring
+  RUN yum -y install php-pear
+  ```
+
+  * RUN 명령을 한 줄로 지정
+
+  ```
+  RUN yum -y install httpd php php-mbstring php-pear
+  ```
+
+  * RUN 명령의 줄 바꿈
+
+  ```shell
+  RUN yum -y install \
+  					 httpd\
+  					 php\
+  					 php-mbstring\
+  					 php-pear
+  ```
+
+---
+
+### 데몬 실행 (CMD 명령)
+
+* RUN 명령은 이미지 작성을 위해 실행하는 명령을 기술하지만, CMD 명령을 사용해 이미지를 바탕으로 생성된 컨테이너 안에서 명령을 실행
+
+* Dockerfile에는 하나의 CMD 명령을 기술할 수 있음 (만약 여러개를 지정할 경우 마지막 명령만 유효함)
+
+* CMD 명령
+
+  ```shell
+  CMD [실행하고 싶은 명령]
+  ```
+
+* Exec 형식으로 기술
+
+  * Exec 형식은 shell을 호출하지 않음. 인수는 JSON 베열로 지정
+
+  ```shell
+  CMD ["nginx", "-g", "daemon off;"]
+  ```
+
+* Shell 형식으로 기술
+
+  * 쉘을 호출하여 실행
+
+  ```shell
+  CMD nginx -g 'daemon off'
+  ```
+
+* ENTRYPOINT 명령의 파라미터로 기술
+  * ENTRYPOINT 명령의 인수로 CMD 명령을 사용. (daemon 실행 : ENTRYPOINT 명령)
+
+
+
+* CMD 명령 (ubuntu:16.04 에서 nginx 설치 후 데몬 실행.  웹 서버로 액세스하기 위해 EXPOSE 명령을 사용하여 80번 포트 지정 )
+
+```shell
+# 베이스 이미지 설정
+FROM ubuntu:16.04
+
+# Nginx 설치
+RUN apt-get -y update && apt-get -y upgrade
+RUN apt-get -y install nginx
+
+# 포트 지정
+EXPOSE 80
+
+# 서버 실행
+CMD ["nginx", "-g", "daemon off;"]
+```
+
+
+
+* 컨테이너 실행 
+
+```shell
+# docker image 생성
+$ docker build -t cmd-sample .
+# 이미지를 바탕으로 컨테이너 실행
+$ docker container run -p 80:80 -d cmd-sample
+CONTAINER ID        IMAGE       COMMAND                   CREATED            STATUS          PORTS         NAMES
+18a1eb88a591     cmd-sample   "nginx -g 'daemon of…"   7 seconds ago    Up 6 seconds   0.0.0.0:80->80/tcp     clever_hodgkin
+```
+
+---
+
+#### 패키지 관리 시스템
+
+* 애플리케이션 설치 시에 발생하는 의존 관계를 모아서 관리하는 시스템
+* Linux의 패키지 관리 시스템으로 YUM, APT
+  * YUM (Yellowdog Updater Modified)
+    * Centos나 Fedora와 같은 RedHat 계열 디스트리뷰션에서 이용하는 패키지 관리 시스템
+    * 패키지를 설치하면 관련된 패키지까지 자동으로 설치
+    * 최근에는 YUM의 후계자?인 DNF(Dandified Yum)도 사용 중
+  * APT (Advanced Packaging Tool)
+    * Debian이나 Unbuntu와 같은 Debian 계열 디스트리뷰션에서 이용하는 패키지 관리 시스템
+    * 패키지의 의존 관계를 모아서 관리할 수 있음
+
+----
+
+### 데몬 실행 (ENTRYPOINT 명령)
+
+* Dockerfile에서 빌드한 이미지로부터 Docker Container가 시작하기 때문에 ``docker container run`` 명령을 실행했을 때 실행됨
+
+``` shell
+ENTRYPOINT [실행하고 싶은 명령]
+```
+
+* Exec 형식으로 실행
+
+  ```shell
+  ENTRYPOINT ["nginx", "-g", "daemon off;"]
+  ```
+
+* Shell 형식으로 실행
+
+  ```shell
+  ENTRYPOINT nginx -g 'daemon off;'
+  ```
+
+* ENTRYPOINT 명령과 CMD 명령의 차이는 docker container run 명령 실행 시 동작
+
+* ENTRYPOINT 명령에서 지정한 명령은 반드시 컨테이너에서 실행. 
+
+* 실행 시 명령 인수를 지정하고 싶을 때는 CMD 명령과 조합하여 사용. ENTRYPOINT는 명령 자체를 지정
+
+* ENTRYPOINT로 top 명령 실행. CMD 명령으로 갱신 간격인 -d 옵션을 10초로 지정
+
+```shell
+# Docker 이미지 취득
+FROM ubuntu:16.04
+
+# top 실행
+ENTRYPOINT ["top"]
+CMD ["-d", "10"]
+```
+
+* docker container run 으로 실행
+
+```shell
+$ docker build -t sample .  # 이미지 생성
+
+$ docker container run -it sample   
+
+$ docker container run -it sample -d 2 # 2초 간격으로 갱신
+
+top - 14:13:18 up  1:47,  0 users,  load average: 0.33, 0.21, 0.23
+Tasks:   1 total,   1 running,   0 sleeping,   0 stopped,   0 zombie
+%Cpu(s):  1.2 us,  1.1 sy,  0.0 ni, 97.6 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st
+KiB Mem :  2034356 total,    83608 free,  1029476 used,   921272 buff/cache
+KiB Swap:  1048572 total,  1036284 free,    12288 used.   853636 avail Mem 
+
+  PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND    
+    1 root      20   0   36664   3096   2680 R   0.0  0.2   0:00.03 top  
+```
+
+* CMD 명령은 docker container run 명령 실행 시에 덮어 쓸 수 있는 구조
+
+---
+
+### 빌드 완료 후에 실행되는 명령 (ONBUILD 명령)
+
+* ONBUILD 명령은 그 다음 빌드에서 실행할 명령을 이미지 안에 설정하기 위한 명령
+* ONBUILD 명령을 사용하여 어떤 명령을 실행하도록 설정하여 빌드하고 이미지를 작성
+* 이미지를 다른 Dockerfile에서 베이스 이미지로 설정하여 빌드했을 때, ONBUILD 명령에서 지정한 명령을 실행시킬 수 있음
+
+```shell
+ONBUILD [실행하고 싶은 명령]
+```
+
+* 자신의 Dockerfile로부터 생성한 이미지를 베이스 이미지로 한 다른 Dockerfile에 빌드할 때 실행하고 싶은 명령을 기술
+* 웹 시스템을 구축할 때 OS 설치 및 환경 설정이나 웹 서버 설치 및 각종 플러그인 설치 등과 같은 인프라 환경 구축과 관련된 부분을 베이스 이미지로 작성. 
+* 이때, ONBUILD 명령으로 이미지 안에 개발한 프로그램을 전개하는 명령(ADD나 COPY)을 지정
+
+---
+
+#### 베이스 이미지 작성
+

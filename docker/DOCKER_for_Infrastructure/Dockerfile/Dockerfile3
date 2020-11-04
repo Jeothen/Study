@@ -1,0 +1,5 @@
+FROM ubuntu:latest
+
+RUN echo Hello Shell type
+RUN ["echo", " Hello Exec type "]
+RUN ["/bin/bash", "-c", "echo ' Hello Using bash on Exec type ' "]
