@@ -458,6 +458,7 @@ Hola asa
   ```
 
 * ENTRYPOINT 명령의 파라미터로 기술
+  
   * ENTRYPOINT 명령의 인수로 CMD 명령을 사용. (daemon 실행 : ENTRYPOINT 명령)
 
 
@@ -584,5 +585,172 @@ ONBUILD [실행하고 싶은 명령]
 
 ---
 
-#### 베이스 이미지 작성
+##### 베이스 이미지 작성 (Dockerfile2.base)
+
+* tar 파일 생성
+
+```shell
+$ docker container export interesting_saha > centos.tar
+```
+
+
+
+```shell
+RUN apt-get -y update && apt-get -y upgrade
+
+# 베이스 이미지 설정
+FROM ubuntu:16.04
+
+# Nginx
+RUN apt-get -y install nginx
+
+# 포트 지정
+EXPOSE 80
+
+# 웹 콘텐츠 배치
+ONBUILD ADD centos.tar ./
+
+# Nginx 실행
+CMD ["nginx", "-g", "daemon off;"]
+```
+
+
+
+* dockfer build 명령을 사용하여 파일명을 지정할 때는 -f 옵션
+
+```shell
+$ docker build -t web-base -f Dockerfile2.base .
+Sending build context to Docker daemon  224.9MB
+Step 1/6 : FROM ubuntu:16.04
+ ---> dfeff22e96ae
+Step 2/6 : RUN apt-get -y update && apt-get -y upgrade
+ ---> Using cache
+ ---> 4e95baaeaba1
+Step 3/6 : RUN apt-get -y install nginx
+ ---> Using cache
+ ---> adbcc5d7f06e
+Step 4/6 : EXPOSE 80
+ ---> Using cache
+ ---> cd6c76d5940e
+Step 5/6 : ONBUILD ADD centos.tar ./
+ ---> Running in ef0e5d68b67a
+Removing intermediate container ef0e5d68b67a
+ ---> 902455720114
+Step 6/6 : CMD ["nginx", "-g", "daemon off;"]
+ ---> Running in 474caf3bad62
+Removing intermediate container 474caf3bad62
+ ---> 748e3c3e5ef7
+Successfully built 748e3c3e5ef7
+Successfully tagged web-base:latest
+```
+
+##### 웹 서버용 이미지 작성
+
+```shell
+$ docker image ls
+REPOSITORY          TAG         IMAGE ID            CREATED             SIZE
+web-base         latest        748e3c3e5ef7        2 minutes ago       223MB
+
+
+# DockerTest
+# Docker 이미지 취득
+FROM web-base
+
+
+$ docker build -t 
+docker build -t web_base_container -f DockerTest .
+Sending build context to Docker daemon  224.9MB
+Step 1/1 : FROM web-base
+# Executing 1 build trigger
+ ---> 9ac417c59bd7
+Successfully built 9ac417c59bd7
+Successfully tagged web_base_container:latest
+```
+
+#####  웹 서버용 컨테이너 시작
+
+```shell
+$ docker container run -d -p 80:80 web_base_container
+b9aee2ef7a9f987edc1d9f3445375191708181a65ded452fb3ed8b30283d3d90  (포트 중복 여부 확인)
+
+$ docker container ls -a 
+CONTAINER ID        IMAGE           COMMAND              CREATED         STATUS             PORTS     NAMES
+b9aee2ef7a9f  web_base_container "nginx -g 'daemon of…" 3 minutes ago   Exited (127)3 minutes ago  goofy_easley
+
+$ docker container start 
+```
+
+docker image inspect 명령으로 ONBUILD 명령 유무 확인
+
+* 이미지의 상세 정보 확인
+
+```shell
+$ docker image inspect --format="{{ .Config.OnBuild }}" web-base
+[ADD centos.tar ./]
+```
+
+---
+
+#### 시스템 콜 시그널의 설정 (STOPSIGNAL 명령)
+
+* 컨테이너를 종료할 때 ``STOPSIGNAL [시그널] `` 옵션을 이용하여 송신 시그널을 설정
+* 시그널 번호 또는 시그널명(SIGKILL 등)을 지정
+
+#### 컨테이너 헬스 체크 명령 (HEALTHCHECK 명령)
+
+* 컨테이너 안의 프로세스가 정상적으로 작동하고 있는지를 체크하고 싶을 때 사용
+
+```
+HEALTHCHECK [옵션] CMD 실행할 명령
+```
+
+* 지정할 수 있는 옵션
+
+| 옵션         | 설명               | 기본값 |
+| ------------ | ------------------ | ------ |
+| --interval=n | 헬스 체크 간격     | 30s    |
+| --timeout=n  | 헬스 체크 타임아웃 | 30s    |
+| --retries=N  | 타임아웃 횟수      | 3      |
+
+* 헬스 체크
+
+````shell
+HEALTHCHECK --interval=5m ---timeout=3s CMD curl -f http://localhost/ || exit 1
+
+# 이미지 생성
+$ docker build -t healthcheck ./
+Step 2/4 : HEALTHCHECK --interval=100s --timeout=3s CMD curl -f http://localhost/ || exit 1
+ ---> Running in 0381a7cae021
+Successfully built 243af3a9219e
+Successfully tagged healthcheck:latest
+
+# 컨테이너 생성
+$ docker create healthcheck
+90da43d58d9fff1b42edb25c050d65dc896638d23f3d2f83151ab78155531374
+
+$ docker container inspect wizardly_moore
+[
+    {
+        "Id": "b7ee0b4bcf0129089528e830ade59611f01c2a0a03e6ebf6b9b3b8608178cd64",
+        "Created": "2020-11-05T14:52:47.2215652Z",
+       ...
+            "Healthcheck": {
+                "Test": [
+                    "CMD-SHELL",
+                    "curl -f http://localhost/ || exit 1"
+                ],
+                "Interval": 100000000000,
+                "Timeout": 3000000000
+            },
+    }
+]
+````
+
+
+
+---
+
+###  환경 및 네트워크 설정
+
+#### 환경변수 설정 (ENV 명령)
 

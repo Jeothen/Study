@@ -1,4 +1,4 @@
-
+# Docker Order
 
 
 
@@ -349,13 +349,13 @@ $ docker container stop 605daf9d3b7eb2697a28b787d9c6ce0238b5b15e93d61c9d44f6f21a
 
 * restart 옵션
 
-| 설정값           | 설명                                             |
-| ---------------- | ------------------------------------------------ |
-| no               | 재시작하지 않는다                                |
-| on-failure       | 종료 status가 0이 아닐 때 재시작                 |
-| on-failure:횟수n | 종료 status가 0이 아닐 때 n번 재시작             |
-| always           | 항상 재시작                                      |
-| unless-stopped   | 최근 컨테이너가 정지 상태가 아니라면 항상 재시작 |
+| 설정값           | 설명                                               |
+| ---------------- | -------------------------------------------------- |
+| no               | 재시작하지 않는다                                  |
+| on-failure       | 종료 status가 0이 아닐 때 재시작                   |
+| on-failure:횟수n | 종료 status가 0이 아닐 때 n번 재시작               |
+| always           | 항상 재시작                                        |
+| unless-stopped   | 최근 컨테이너가 정지 상태가 아니라면 항상 재시작ㅅ |
 
 ``$ docker container run -it --restart=always centos /bin/bash`` 와 같이 restart 옵션 지정
 
