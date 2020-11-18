@@ -29,7 +29,10 @@
 
   * Client 에서도 동일하게 venv에 접속한 후 ``$ pytest-watch` 로 실행하면 계속 test 진행
 
+  
+
 * ngrok : 외부 ip에서 로컬 서버에 접속하게 해주는 터널 프로그램
+  
   * ngrok 의 5000번 포트를 공용으로 설정
 
 
@@ -49,17 +52,18 @@ def communicate_test():
 
 * ``FLASK_APP=python.py flask run`` 으로 실행하지만, app.py인 경우 default로 설정되어 ``$ flask run``
 
-
-
----
+* `Flask_DEBUG=1 flask run` 으로 실행하면 서버를 재실행하지 않아도 변경 내용 반영
 
 
 
-* 내일 할 일
+```shell
+$ curl localhost:5000/json
+{
+  "test": "SUCCESS"
+}
 
-  * pc에서 다른 ip port로 접속
-  * url 경로 설정 후 local에서 routing으로 접속
-  * Web Server : nginx  /  uwsgi 를 이용하여 배포
+$ http GET localhost:5000
+HTTP/1.0 200 OK
+```
 
-  
 

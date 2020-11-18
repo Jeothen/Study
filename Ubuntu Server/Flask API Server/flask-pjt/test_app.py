@@ -21,16 +21,15 @@ def test_sample(client):
 	
 #	response = client.get('/')
 #	assert response.status_code == 200
-	# transform byte code -> b""	
+#	# transform byte code -> b""	
 #	assert b'Suc' in response.data	
 #	data = response.get_json()
 
 	old_cnt = data["count"]
 	
-	for i in range(5):
-		status_code, body, data = do_get(client,'/json')
-		assert status_code == 200
-		new_cnt = data["count"]
-		assert old_cnt + i + 1 == new_cnt
+	status_code, body, data = do_get(client,'/json')
+	assert status_code == 200
+	new_cnt = data["count"]
+	assert old_cnt + 1 == new_cnt
 
 
