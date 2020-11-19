@@ -6,7 +6,7 @@
 
   * pyenv, pyenv-virtualenv 설치
   * 쉘 설정 파일에 프로그램 초기화 코드 추가
-  * pyenv로 python 설치(3.7.5) 및 전역(local 도 가능)으로 설정
+  * pyenv로 python 설치(3.7.5) 및 전역으로 설정
     * ``$ pyenv global 3.7.5``
     * check pyenv 및 python version
 
@@ -27,7 +27,9 @@
 
   * `` source venv/bin/activate `` 로 가상환경에 접속
 
-  * Client 에서도 동일하게 venv에 접속한 후 ``$ pytest-watch` 로 실행하면 계속 test 진행
+  * 
+
+  * Client 에서도 동일하게 venv에 접속한 후 `$ pytest-watch` 로 실행하면 계속 test 진행
 
   
 
