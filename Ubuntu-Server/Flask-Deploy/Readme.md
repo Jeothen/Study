@@ -1,57 +1,115 @@
 ## Flask Deploy
 
-* Web Server : nginx  /  uwsgi 를 이용하여 배포
+* Deploy using nginx  /  uwsgi 
 
 
-
-
-
----
 
 #### Env. setting
 
-* ``$ sudo adduser thj ``  : useradd
+* ``$ sudo adduser thj ``  : user add shell
 
-  * `$ sudo visudo` 명령어를 통해서 유저 권한 등록
+  * `$ sudo visudo`  : register user authentication
+  
   * ``su - thj`` : user change (super user).   ``su the`` : just change user
-  * ``/etc/apt/source.list `` 에서 패키지 다운로드 path를 설정 - 패키지 install 속도에 영향
 
-    * sed 명령어를 통해 아카이브 페이지 변경
+  * Package download on ``/etc/apt/source.list ``  : archive influence parkage install speed
 
-    * ubuntu version에 맞는 archice 사용
+    * ``sed``  : change archive page
+* using archive on ubuntu versions
+    
+  * setting on like API Server
+  
+    
 
-  * API Server와 동일하게 setting
-  * 가상환경에서 uwsgi install
+#### Uwsgi setting
 
+```shell
+$ python3 -m pip install uwsgi
+```
 
+* Add ``app = Flask(__name__) ``   on app.py
 
+  * because uwsgi find on application, so add  `` application = app ``  on last line 
+
+* app.py running on port 9090
+
+  ```shell
+  $ uwsgi --wsgi-file app.py --http :9090
+  ```
+
+* below context save on uswgi.ini 
+
+  ````shell
+  [uwsgi]
+  http = :9090
+  wsgi-file = app.py
+  single-interpreter = true  # single or multiple interpreter mode
+  enable-threads = true  # additional thread possible
+  master = true  # master node
+  
+  # etc setting exists
+  ````
+
+* then just using 
+
+  ```shell
+  $ uwsgi --ini uwsgi.ini
+  ```
+
+  
 
 #### nginx setting
 
-* nginx setting
-  
-  ```shell
-$ sudo vim /etc/nginx/sites-available/default
-  ```
-  
-  * 내용 추가
-  
-  * error 발생 (ubuntu 20.04 )
-  
-    ```
-    pam_unix(sudo:auth): Couldn't open /etc/securetty: No such file or directory
-    pam_unix(polkit-1:auth): authentication failure;
-    ```
-  
-  * 
-  
-* uwsgi setting
+```shell
+$ sudo apt-get install nginx
 
-  ```shell
-  $ sudo vim /etc/uwsgi/apps-available/uwsgi.ini
-  ```
+$ sudo vim /etc/nginx/sites-available/flask_config.ini
+```
 
-  * 내용 추가
+* below context save on flask_config.ini
 
+```shell
+server {
+    listen 80;  # listen port
+    server_name localhost; 
 
+    location / {
+        include uwsgi_params; 
+        uwsgi_pass unix:/tmp/flask.sock;  # nginx just convey to flask.sock - proxy role 
+    }
+}
+```
+
+* activated through link
+
+```shell
+$ sudo ln -s /etc/nginx/sites-available/flask_config.ini /etc/nginx/sites-enabled/
+# if default is activated, then remove default file
+$ sudo service nginx restart
+```
+
+* nginx is operated but, add below context to uwsgi.ini beacause there's no socket
+
+```shell
+socket = /tmp/flask.sock # socket create in that path
+chmod-socket = 666  # other user include nginx can read / write socket
+```
+
+* remove http setting on uwsgi and only using through nginx
+
+```shell
+# http = :9090
+```
+
+* then restart uwsgi
+
+```shell
+$ sudo service uwsgi restart
+
+# operate uwsgi 
+$ uwsgi --ini uwsgi.ini
+
+# client 
+$ curl localhost  # not using specific port
+```
 
