@@ -1,19 +1,34 @@
-
-
 ### Bucket Aggregation
 
-* 
+* Create Bucket by Group
+
+
+
+* Create Index
 
 ```shell
 $ curl -XPUT localhost:9200/basketball
 {"acknowledged":true,"shards_acknowledged":true}
 
+```
+
+* add mapping to index
+
+```shell
 $ curl -XPUT 'localhost:9200/basketball/record/_mapping' -d @basketball_mapping.json 
 {"acknowledged":true}
+```
 
+* Insert document
+
+```shell
 $ curl -XPOST 'localhost:9200/_bulk' --data-binary @twoteam_basketball.json 
 {"took":18,"errors":false,"items":[{"index":{"_index":"basketball","_type":"record","_id":"1","_version":1,"result":"created","_shards":{"total":2,"successful":1,"failed":0},"created":true,"status":201}},{"index":{"_index":"basketball","_type":"record","_id":"2","_version":1,"result":"created","_shards":{"total":2,"successful":1,"failed":0},"created":true,"status":201}},{"index":{"_index":"basketball","_type":"record","_id":"3","_version":1,"result":"created","_shards":{"total":2,"successful":1,"failed":0},"created":true,"status":201}},{"index":{"_index":"basketball","_type":"record","_id":"4","_version":1,"result":"created","_shards":{"total":2,"successful":1,"failed":0},"created":true,"status":201}}]}
+```
 
+* Aggregation by team (terms - field : team)
+
+```shell
 $ curl -XGET localhost:9200/_search?pretty --data-binary @terms_aggs.json 
 {
   "took" : 75,
@@ -45,6 +60,11 @@ $ curl -XGET localhost:9200/_search?pretty --data-binary @terms_aggs.json
     }
   }
 }
+```
+
+* Apply stat (metric aggregation)
+
+```shell
 
 # bucket aggretation은 sub aggregation을 넣을 수 있음
 // terms -> aggs
@@ -95,6 +115,3 @@ $ curl -XGET localhost:9200/_search?pretty --data-binary @stats_by_team.json
 }
 ```
 
-
-
-# 
