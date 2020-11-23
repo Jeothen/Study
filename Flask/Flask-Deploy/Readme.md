@@ -16,7 +16,7 @@
 
     * ``sed``  : change archive page
 * using archive on ubuntu versions
-    
+  
   * setting on like API Server
   
     
@@ -29,7 +29,7 @@ $ python3 -m pip install uwsgi
 
 * Add ``app = Flask(__name__) ``   on app.py
 
-  * because uwsgi find on application, so add  `` application = app ``  on last line 
+  * because uwsgi find on application, so add  `` application = app ``  on last line of app.py 
 
 * app.py running on port 9090
 

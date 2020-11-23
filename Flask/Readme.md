@@ -122,13 +122,11 @@ Bridge -> port forwarding not operated
 * host - client 간 통신
   * Flask Framework를 Linux 환경에서 구현
   * api server test
-* Flask nginx / wsgi 를 이용하여 deploy (~11/20)
+* Flask nginx / wsgi 를 이용하여 ubuntu deploy
 
 
 
-* Cloud Deploy (~11/22)
-
-
+* Cloud Deploy
 
 
 
