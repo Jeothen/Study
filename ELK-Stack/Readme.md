@@ -24,6 +24,19 @@ export PATH=$JAVA_HOME/bin:$PATH
 export Class_PATH=$JAVA_HOME/lib:$CLASS_PATH
 ```
 
+* firewall
+
+```shell
+$ sudo apt-get install firewalld
+$ sudo firewall-cmd --permanent --zone=public --add-port=9200/tcp
+$ sudo firewall-cmd --reload
+$ sudo firewall-cmd --list-ports
+```
+
+
+
+https://www.elastic.co/kr/support/matrix
+
 
 
 * elasticsearch / logstash / kibana / filebeat install
@@ -36,7 +49,7 @@ $ wget https://artifacts.elastic.co/downloads/logstash/logstash-7.3.0.deb
 $ wget https://artifacts.elastic.co/downloads/kibana/kibana-7.3.0-amd64.deb
 ```
 
-* dpkg
+* Dpkg
 
 ```shell
 $ sudo dpkg -i elasticsearch-7.3.0-amd64.deb
@@ -46,11 +59,27 @@ $ sudo dpkg -i logstash-7.3.0.deb
 $ sudo dpkg -i kibana-7.3.0-amd64.deb
 ```
 
+* network connection 
+
+```shell
+/etc/elasticsearch/elasticsearch.yml chagne on test environment
+  * network.host: 0.0.0.0
+  * Discovery.seed_hosts = ["0.0.0.0"]
+  
+  -----
+  network:
+  	host: 0.0.0.0
+  http:
+  	port: 9200
+```
+
 
 
 * start / stop
 
 ```shell
+$ sudo systemctl enable elasticsearch.service
+
 $ sudo service elasticsearch start
 # $ sudo service elasticsearch stop
 
@@ -77,6 +106,8 @@ $ sudo service elasticsearch status
 
 ```shell
 $ brew cask install homebrew/cask-versions/adoptopenjdk8
+
+# environment setting to jdk8
 ```
 
 * homebrew update
@@ -100,9 +131,7 @@ $ elasticsearch
 * kibana install
 
 ````shell
-$ brew tap elastic/tap
-
-$ brew install elastic/tap/kibana-full
+$ brew install kibana
 ````
 
 
