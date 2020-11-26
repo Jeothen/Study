@@ -44,12 +44,31 @@ $ curl -XPOST 'localhost:9200/basketball/record' -H 'Content-Type:application/js
 
 {"_index":"basketball","_type":"record","_id":"x1P1_3UBnNLNfaWjUVMh","_version":1,"result":"created","_shards":{"total":2,"successful":1,"failed":0},"_seq_no":1,"_primary_term":1}
 
-$ curl -XPOST 'localhost:9200/_bulk'  -H 'Content-Type:application/json' --data-binary @bulk.json
+$ curl -XPOST 'localhost:9200/_bulk'  -H 'Content-Type:application/json' --data-binary @bulk_basketball.json
 
 
 ```
 
-* open kibana (localhost:5601)
+* start kibana (localhost:5601)
+
+---
+
+#### Create Index Pattern
+
+* In the case of large capacity, overload may occur if managed in one pattern, so index patterns are created by dividing them into several units.
+
+### Discover
+
+* setting dates range based on the date set in the data
+* there's a many function like select specific columns (toggle) and data transformation(json, table)...
+
+#### Visualize
+
+* there's a many visualization graph.
+* search graph and index pattern. then setting axis
+* select aggregation / field / orderby...
+
+
 
 
 
