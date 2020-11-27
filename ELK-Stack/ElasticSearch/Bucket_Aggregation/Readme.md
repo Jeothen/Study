@@ -17,6 +17,7 @@ $ curl -XPUT localhost:9200/basketball
 ```shell
 $ curl -XPUT 'localhost:9200/basketball/record/_mapping' -d @basketball_mapping.json 
 {"acknowledged":true}
+
 ```
 
 * Insert document

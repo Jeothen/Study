@@ -46,6 +46,8 @@ $ curl -XGET http://localhost:9200/classes?pretty
 $ curl -XPUT 'http://localhost:9200/classes/class/_mapping' -d @classesRating_mapping.json 
 {"acknowledged":true}
 
+# above 6.8.  _mapping' -> _mapping?include_type_name=true'
+
 $ $ curl -XGET http://localhost:9200/classes?pretty
 {
   "classes" : {

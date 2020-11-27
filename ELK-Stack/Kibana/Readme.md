@@ -62,19 +62,20 @@ $ curl -XPOST 'localhost:9200/_bulk'  -H 'Content-Type:application/json' --data-
 * setting dates range based on the date set in the data
 * there's a many function like select specific columns (toggle) and data transformation(json, table)...
 
-#### Visualize
+### Visualize
 
 * there's a many visualization graph.
 * search graph and index pattern. then setting axis
 * select aggregation / field / orderby...
-
-
-
-
+* If data type includes geo-point or geo_shape, mapping must be done. because, kibana doesn't recognize geo-point as type but string.
 
 
 
 #### Canvas
 
 * presented by kibana, canvas pulls live data from elasticsearch then make presentaion and slide deck.
-* ...
+
+
+
+
+

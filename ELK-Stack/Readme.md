@@ -134,4 +134,9 @@ $ elasticsearch
 $ brew install kibana
 ````
 
+* logstash install
+
+```shell
+$ brew install logstash
+```
 
