@@ -99,7 +99,23 @@ $ sudo ./logstash-f logstash-simple.conf
 $ sudo logstash -f logstash_population.conf 
 ```
 
+* Analysis on Kibana
 
 
 
+### Real Stock Analysis
 
+
+
+* from https://finance.yahoo.com/  search `FaceBook`
+* `Historical Data` tab, then data download as csv file
+
+* start logstash
+
+```shell
+$ sudo logstash -f logstash_fb_stock.conf
+```
+
+* Analysis on Kibana
+
+  

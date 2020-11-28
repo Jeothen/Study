@@ -1,6 +1,9 @@
 # ELK
 
-
+* Elastic Search : save log, database role
+* Log Stash : Receives logs generated in the cloud and stores them in elastic search
+  * Filebeat : Installed in each server, when there is a change in the log file, it is sent to log stash
+* Kibana : Print the log saved in elastic search to the browser
 
 #### Ubuntu Setting
 
@@ -47,6 +50,8 @@ $ wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.3.0-
 $ wget https://artifacts.elastic.co/downloads/logstash/logstash-7.3.0.deb
 
 $ wget https://artifacts.elastic.co/downloads/kibana/kibana-7.3.0-amd64.deb
+
+$ wget https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-7.3.0-amd64.deb
 ```
 
 * Dpkg
@@ -57,6 +62,8 @@ $ sudo dpkg -i elasticsearch-7.3.0-amd64.deb
 $ sudo dpkg -i logstash-7.3.0.deb
 
 $ sudo dpkg -i kibana-7.3.0-amd64.deb
+
+$ sudo dpkg -i filebeat-7.3.0-amd64.deb
 ```
 
 * network connection 
@@ -86,6 +93,8 @@ $ sudo service elasticsearch start
 $ sudo service kibana start
 
 $ sudo service logstash start
+
+$ sudo service filebeat start
 ```
 
 * status
@@ -140,3 +149,9 @@ $ brew install kibana
 $ brew install logstash
 ```
 
+* filebeat install
+
+```shell
+$ curl -L -O https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-7.10.0-darwin-x86_64.tar.gz
+$ tar xzvf filebeat-7.10.0-darwin-x86_64.tar.gz
+```
