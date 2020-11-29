@@ -4,7 +4,7 @@
 
 ### mapping
 
-* same as DBMS Schema
+* Same as DBMS Schema
 * The data saved as a string due to no mapping is not calculated because it is saved as a string when visualized.
 
 
