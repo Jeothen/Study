@@ -74,8 +74,3 @@ $ curl -XPOST 'localhost:9200/_bulk'  -H 'Content-Type:application/json' --data-
 #### Canvas
 
 * presented by kibana, canvas pulls live data from elasticsearch then make presentaion and slide deck.
-
-
-
-
-
